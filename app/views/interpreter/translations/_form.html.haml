@@ -1,0 +1,16 @@
+= form_tag interpreter_translations_path do
+
+  .field
+    = label_tag :locale
+    %br
+    = text_field_tag :locale
+  .field
+    = label_tag :key
+    %br
+    = text_field_tag :key
+  .field
+    = label_tag :value
+    %br
+    = text_field_tag :value
+  .actions
+    = submit_tag "Save"

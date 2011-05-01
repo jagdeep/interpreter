@@ -1,0 +1,30 @@
+= Interpreter
+
+Interpreter makes managing different translations easy. It provides a simple UI to add and modify translations.
+
+== Requirements
+
+Interpreter uses a Redis database as the backend to store translations. So make sure you have Redis running on your system and you have redis gem is in your Gemfile.
+
+== Installation
+
+Add the gem to your Gemfile.
+
+  gem 'interpreter'
+
+Create an initialization file
+
+  config/initializers/interpreter.rb
+
+Add the following to it and you can set a Redis database to use as the backend store
+
+  Interpreter.setup do |config|
+    config.backend = Redis.new
+  end
+
+== Usage
+
+You can access all the translations by visiting the following url
+
+  /interpreter/translations
+

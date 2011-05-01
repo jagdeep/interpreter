@@ -1,0 +1,16 @@
+%h1 Translations
+#translations
+  .header
+    .key Key
+    .value Value
+  %br.clearfloat
+  .body
+    - @translations.each do |t|
+      .translation
+        .key= t.key
+        .value= t.value
+      %br.clearfloat
+
+
+%h2 Add Translation
+= render :partial => "form"
