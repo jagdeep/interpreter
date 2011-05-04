@@ -4,29 +4,8 @@
 # instead of editing this one. Cucumber will automatically load all features/**/*.rb
 # files.
 
+require 'cucumber/rails'
 
-# require 'cucumber/rails'
-
-### custom require cucumber with dummy rails application
-
-require 'rails'
-
-require 'cucumber/rails3/application'
-ENV["RAILS_ENV"] ||= "test"
-ENV["RAILS_ROOT"] ||= File.expand_path('../../../test/dummy', __FILE__)
-require File.expand_path('../../../test/dummy/config/environment', __FILE__)
-require 'cucumber/rails3/action_controller'
-
-require 'rails/test_help'
-
-require 'cucumber/rails/world'
-require 'cucumber/rails/hooks'
-require 'cucumber/rails/capybara'
-require 'cucumber/web/tableish'
-
-### end
-
-# require capybara
 require 'capybara/rails'
 
 ActionMailer::Base.delivery_method = :test
@@ -34,10 +13,6 @@ ActionMailer::Base.perform_deliveries = true
 ActionMailer::Base.default_url_options[:host] = "test.com"
 
 Rails.backtrace_cleaner.remove_silencers!
-
-# Run any available migration
-ActiveRecord::Migrator.migrate File.expand_path("../dummy/db/migrate/", __FILE__)
-
 
 # Capybara defaults to XPath selectors rather than Webrat's default of CSS3. In
 # order to ease the transition to Capybara we set the default here. If you'd

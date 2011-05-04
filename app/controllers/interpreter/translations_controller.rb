@@ -1,4 +1,5 @@
 class Interpreter::TranslationsController < ApplicationController
+  layout "translations"
 
   def index
     @translations = Interpreter::Translation.all

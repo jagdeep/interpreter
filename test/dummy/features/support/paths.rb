@@ -23,7 +23,10 @@ module NavigationHelpers
       path_to_pickle $1, $2, :extra => $3                           #  or the forum's post's edit page
 
     when /^#{capture_model}(?:'s)? (.+?) page$/                     # eg. the forum's posts page
-      path_to_pickle $1, :extra => $2                               #  or the forum's edit page
+      polymorphic_path(model($1), :action => $2)                    #  or the forum's edit page
+
+    when /translations page/
+      interpreter_translations_path
 
     # Add more mappings here.
     # Here is an example that pulls values out of the Regexp:

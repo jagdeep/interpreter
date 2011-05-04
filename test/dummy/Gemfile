@@ -1,0 +1,16 @@
+source 'http://rubygems.org'
+
+gem 'rails', '3.0.7'
+gem 'haml'
+gem 'redis'
+gem 'interpreter', :path => './../..'
+gem 'sqlite3'
+
+group :test do
+  gem 'webrat'
+  gem 'cucumber-rails'
+  gem 'pickle'
+  gem 'factory_girl_rails'
+  gem 'capybara'
+  gem 'database_cleaner'
+end
