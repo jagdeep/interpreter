@@ -12,3 +12,7 @@ end
 Then /^I should see the following translations:$/ do |expected_translations_table|
   expected_translations_table.diff!(tableish('table tr', 'td,th'))
 end
+
+Given /^a translation is present with key: (.+), value: (.+) and locale: (.+)$/ do |key, value, locale|
+  Interpreter::Translation.create(locale, key, value)
+end

@@ -1,0 +1,9 @@
+%h1 View Translations
+
+%h2= @key
+
+#translations
+  - @translations.each do |t|
+    .translation
+      .locale= t.locale
+      .value= t.value
