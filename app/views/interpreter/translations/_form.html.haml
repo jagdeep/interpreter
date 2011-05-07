@@ -1,16 +1,16 @@
-= form_tag interpreter_translations_path do
-
+= form_for @translation do |f|
+  = render :partial => 'errors', :locals => {:object => @translation}
   .field
-    = label_tag :locale
+    = f.label :locale
     %br
-    = text_field_tag :locale
+    = f.text_field :locale
   .field
-    = label_tag :key
+    = f.label :key
     %br
-    = text_field_tag :key
+    = f.text_field :key
   .field
-    = label_tag :value
+    = f.label :value
     %br
-    = text_field_tag :value
+    = f.text_field :value
   .actions
-    = submit_tag "Save"
+    = f.submit "Save"

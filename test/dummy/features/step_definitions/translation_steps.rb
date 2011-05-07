@@ -14,5 +14,9 @@ Then /^I should see the following translations:$/ do |expected_translations_tabl
 end
 
 Given /^a translation is present with key: (.+), value: (.+) and locale: (.+)$/ do |key, value, locale|
-  Interpreter::Translation.create(locale, key, value)
+  i = InterpreterTranslation.new
+  i.locale = locale
+  i.key = key
+  i.value = value
+  i.save
 end

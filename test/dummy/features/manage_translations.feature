@@ -27,14 +27,17 @@ Feature: Manage translations
   Scenario: Remove translation
     Given a translation is present with key: hello, value: hello and locale: en
     When I go to the interpreter translations page
-    Then I should see "Remove" within "#en.hello"
-    When I follow "Remove" within "#en.hello"
-    Then I should see "Translations removed."
-      And I should be on translations page
+    Then I should see "hello"
+      And I should see "Remove"
+    When I follow "Remove"
+    Then I should not see "hello"
+      And I should see "1 translation destroyed."
+      And I should be on the interpreter translations page
 
   Scenario: Search translations
     Given a translation is present with key: hello, value: hello and locale: en
     When I go to the interpreter translations page
-      And I fill in "key" with "hello" within "#search_translations"
+      And I fill in "query" with "hello" within "#search_translations"
       And I press "Search"
     Then I should see "hello" within "#translations"
+      And I should see "1 translation found."

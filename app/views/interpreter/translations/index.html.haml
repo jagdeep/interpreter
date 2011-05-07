@@ -1,19 +1,23 @@
-%h1 Translations
+%h1= link_to 'Translations', interpreter_translations_url
 
-= link_to "New Translation", new_interpreter_translation_path
+%p= @search_notice
+
+#search_translations
+  = form_tag search_interpreter_translations_path do
+    .field
+      = text_field_tag :query
+    .actions
+      = submit_tag "Search"
+
+%p= link_to "New Translation", new_interpreter_translation_path
 
 #translations
-  .header
-    .key Key
-    .value Value
-  %br.clearfloat
-  .body
-    - @translations.each do |t|
-      .translation{:id => t.id}
-        .key= t.id
-        .value= t.value
-        .links
-          =# link_to 'Remove', interpreter_translation_path(t.key), :method => :delete
-      %br.clearfloat
+  - @translations.each do |t|
+    .translation{:id => t.id}
+      .key= t.id
+      .value= t.value
+      .links
+        = link_to 'Remove', interpreter_translation_path(t.key.gsub('.','-')), :method => :delete
+    %br.clearfloat
 
-= link_to "New Translation", new_interpreter_translation_path
+%p= link_to "New Translation", new_interpreter_translation_path

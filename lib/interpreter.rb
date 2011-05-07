@@ -1,5 +1,5 @@
 module Interpreter
-  autoload :Translation, "interpreter/translation"
+  autoload :Base, "interpreter/base"
 
   mattr_reader :backend
   @@backend = nil
