@@ -6,11 +6,12 @@ class Interpreter::TranslationsController < ApplicationController
     if params[:category]
       @translations = InterpreterTranslation.find_like_key("en.#{params[:category]}.*")
     else
-      @translations = {}#InterpreterTranslation.all
+      @translations = InterpreterTranslation.all
     end
   end
 
   def search
+    @categories = InterpreterTranslation.categories
     @translations = InterpreterTranslation.find_like_key params[:query]
     @search_notice = "#{@translations.length} translation#{'s' if @translations.length > 1} found."
     render :action => :index
