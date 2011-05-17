@@ -3,6 +3,7 @@ Rails.application.routes.draw do
     resources :translations do
       collection do
         post 'search'
+        get '/group/:category' => 'translations#index', :as => 'category'
       end
     end
   end

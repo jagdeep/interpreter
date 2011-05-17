@@ -63,7 +63,11 @@ class Interpreter::Base
   end
 
   def self.find_all_by_key key
-    Interpreter.backend.keys("*.#{key}").map{|k| find_by_key(k)}.compact.sort{|a, b| a.locale <=> b.locale}
+    result = {}
+    Interpreter.backend.keys("*.#{key}").map{|k| find_by_key(k)}.compact.each do |t|
+      result[t.locale] = t.value
+    end
+    return result
   end
 
   def self.find_by_key full_key
@@ -86,6 +90,14 @@ class Interpreter::Base
 
   def self.destroy key
     Interpreter.backend.keys("*.#{key}").sum{|k| Interpreter.backend.del(k)}
+  end
+
+  def self.categories
+    Interpreter.backend.keys.map{|k| k.split('.')[1]}.uniq
+  end
+
+  def self.available_locales
+    Interpreter.locales
   end
 
   protected

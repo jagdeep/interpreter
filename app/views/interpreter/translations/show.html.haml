@@ -3,7 +3,7 @@
 %h2= @key
 
 #translations
-  - @translations.each do |t|
+  - InterpreterTranslation.available_locales.each do |locale|
     .translation
-      .locale= t.locale
-      .value= t.value
+      .locale= locale
+      .value= @translations[locale.to_s]

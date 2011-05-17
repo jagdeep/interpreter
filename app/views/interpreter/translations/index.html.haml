@@ -9,6 +9,11 @@
     .actions
       = submit_tag "Search"
 
+%h3 Categories
+#categories
+  - @categories.each do |c|
+    = link_to c.capitalize, category_interpreter_translations_path(c)
+
 %p= link_to "New Translation", new_interpreter_translation_path
 
 #translations
@@ -17,7 +22,7 @@
       .key= t.id
       .value= t.value
       .links
+        = link_to 'Show', interpreter_translation_path(t.key.gsub('.','-'))
         = link_to 'Remove', interpreter_translation_path(t.key.gsub('.','-')), :method => :delete
-    %br.clearfloat
 
 %p= link_to "New Translation", new_interpreter_translation_path

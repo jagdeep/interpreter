@@ -2,7 +2,12 @@ class Interpreter::TranslationsController < ApplicationController
   layout "translations"
 
   def index
-    @translations = InterpreterTranslation.all
+    @categories = InterpreterTranslation.categories
+    if params[:category]
+      @translations = InterpreterTranslation.find_like_key("en.#{params[:category]}.*")
+    else
+      @translations = {}#InterpreterTranslation.all
+    end
   end
 
   def search
@@ -16,7 +21,7 @@ class Interpreter::TranslationsController < ApplicationController
   end
 
   def show
-    @key = params[:id]
+    @key = params[:id].gsub('-','.')
     @translations = InterpreterTranslation.find_all_by_key(@key)
   end
 
@@ -34,7 +39,7 @@ class Interpreter::TranslationsController < ApplicationController
 
   def destroy
     count = InterpreterTranslation.destroy(params[:id].gsub('-','.'))
-    redirect_to interpreter_translations_url, :notice => "#{count} translation#{'s' if count > 1} destroyed."
+    redirect_to :back, :notice => "#{count} translation#{'s' if count > 1} destroyed."
   end
 
 end
