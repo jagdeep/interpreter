@@ -41,7 +41,7 @@ class Interpreter::Base
 
   def save
     if self.valid?
-      Interpreter.backend.set("#{locale}.#{key}", value)
+      Interpreter.backend.set("#{locale}.#{key}", value.to_json)
     else
       return false
     end
@@ -71,12 +71,13 @@ class Interpreter::Base
   end
 
   def self.find_by_key full_key
-    locale = full_key.split('.')[0]
-    key = full_key.gsub("#{locale}.",'')
+    arr = full_key.split('.')
+    locale = arr.shift
+    key = arr.join('.')
     obj = self.new
     obj.locale = locale
     obj.key = key
-    obj.value = Interpreter.backend.get(full_key)
+    obj.value = ActiveSupport::JSON.decode(Interpreter.backend.get(full_key))
     obj.valid? ? obj : nil
   end
 
