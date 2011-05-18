@@ -27,10 +27,10 @@ Feature: Manage translations
   Scenario: Remove translation
     Given a translation is present with key: hello, value: hello and locale: en
     When I go to the interpreter translations page
-    Then I should see "hello"
+    Then I should see "hello" within "#translations"
       And I should see "Remove"
     When I follow "Remove"
-    Then I should not see "hello"
+    Then I should not see "hello" within "#translations"
       And I should see "1 translation destroyed."
       And I should be on the interpreter translations page
 

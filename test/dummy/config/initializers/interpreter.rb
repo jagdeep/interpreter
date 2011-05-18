@@ -1,4 +1,4 @@
 Interpreter.setup do |config|
-  config.backend = Redis.new(:db => 9)
+  config.backend = TRANSLATIONS_BACKEND
   config.locales = [:en, :pt, :es]
 end
