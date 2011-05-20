@@ -1,9 +1,4 @@
-class InterpreterTranslation < Interpreter::Base
-  attributes :locale, :key, :value
-
-  validates :locale, :presence => true
-  validates :key, :presence => true
-  validates :value, :presence => true
+class InterpreterTranslation < Interpreter::Translation
 
   def human_name
     "Translation"
