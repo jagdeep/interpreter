@@ -16,6 +16,12 @@ class Interpreter::Base
     self._attributes += names
   end
 
+  def self.locales(*names)
+    attr_accessor *names
+    define_attribute_methods names
+    self._attributes += names
+  end
+
   def attributes
     self._attributes.inject({}) do |hash, attr|
       hash[attr.to_s] = send(attr)
@@ -25,6 +31,10 @@ class Interpreter::Base
 
   def persisted?
     false
+  end
+
+  def new_record?
+    !persisted?
   end
 
   protected

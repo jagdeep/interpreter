@@ -1,96 +1,104 @@
 class Interpreter::Translation < Interpreter::Base
-  attributes :locale, :key, :value
+  attributes :key
+  locales *Interpreter.locales
 
-  validates :locale, :presence => true
   validates :key, :presence => true
-  validates :value, :presence => true
+
+  def initialize options={}
+    self.key = options[:key]
+    self.class.available_locales.each do |locale|
+      self.send("#{locale}=", options[locale])
+    end
+  end
 
   def persisted?
-    if id?
-      Interpreter.backend.get(id).nil? ? false : true
+    if key?
+      Interpreter.backend.keys("??.#{key}").present?
     else
       super
     end
   end
 
   def id
-    locale + '.' + key
-  end
-
-  def id?
-    locale? and key?
+    self.key.gsub('.','-')
   end
 
   def save
     if self.valid?
-      Interpreter.backend.set("#{locale}.#{key}", value.to_json)
+      self.class.available_locales.each do |locale|
+        value = self.send(locale)
+        Interpreter.backend.set("#{locale}.#{key}", value.to_json) unless value.nil?
+      end
     else
       return false
     end
   end
 
-  def ==(other)
-    self.locale == other.locale and self.key == other.key and self.value == other.value
+  def update_attributes options={}
+    self.key = options[:key]
+    self.class.available_locales.each do |locale|
+      self.send("#{locale}=", options[locale])
+    end
   end
 
-  # def self.all
-  #   result = {}
-  #   Interpreter.backend.keys.each do |full_key|
-  #     arr = full_key.split('.')
-  #     locale = arr.shift
-  #     result[arr.join('.')] ||= {}
-  #     result[arr.join('.')][locale.to_sym] = ActiveSupport::JSON.decode(Interpreter.backend[full_key])
-  #   end
-  #   return result
-  # end
+  def ==(other)
+    self.key == other.key
+  end
 
   def self.all
-    collection = []
-    Interpreter.backend.keys.each do |k|
-      obj = find_by_key(k)
-      if obj and obj.valid?# and obj.child_keys.empty?
-        collection << obj
+    result = []
+    Interpreter.backend.keys("??.*").each do |full_key|
+      key, locale, value = parse_key(full_key)
+
+      obj = result.select{|r| r.key == key }.first || self.new
+      obj.send("#{locale}=", value)
+      obj.send('key=', key)
+      result << obj
+    end
+    return result.uniq
+  end
+
+  def self.find_by_key key
+    collection = Interpreter.backend.keys("??.#{key}")
+    if collection.present?
+      obj = self.new
+      obj.send('key=', key)
+      collection.each do |full_key|
+        key, locale, value = parse_key(full_key)
+        obj.send("#{locale}=", value)
+      end
+      return obj
+    else
+      return nil
+    end
+  end
+
+  def self.find_all_by_value_like str
+    keys = []
+    Interpreter.backend.keys.each do |full_key|
+      if Interpreter.backend.get(full_key).downcase.include?(str.downcase)
+        keys << parse_key(full_key).first
       end
     end
-    collection.sort{|a, b| a.key <=> b.key}
-  end
-
-  def self.find_all_by_key key
-    result = {}
-    Interpreter.backend.keys("*.#{key}").map{|k| find_by_key(k)}.compact.each do |t|
-      result[t.locale] = t.value
-    end
-    return result
-  end
-
-  def self.find_by_key full_key
-    arr = full_key.split('.')
-    locale = arr.shift
-    key = arr.join('.')
-    obj = self.new
-    obj.locale = locale
-    obj.key = key
-    obj.value = ActiveSupport::JSON.decode(Interpreter.backend.get(full_key))
-    obj.valid? ? obj : nil
-  end
-
-  def self.find_like_key str
-    Interpreter.backend.keys("*#{str}*").map{|k| find_by_key(k)}.compact.sort{|a, b| a.locale <=> b.locale}
-  end
-
-  def child_keys
-    Interpreter.backend.keys("#{id}.*")
+    keys.map{|k| find_by_key k}
   end
 
   def self.destroy key
-    Interpreter.backend.keys("*.#{key}").sum{|k| Interpreter.backend.del(k)}
-  end
-
-  def self.categories
-    Interpreter.backend.keys.map{|k| k.split('.')[1]}.uniq
+    Interpreter.backend.keys("??.#{key}").sum{|k| Interpreter.backend.del(k)}
   end
 
   def self.available_locales
     Interpreter.locales
+  end
+
+  protected
+
+  def self.parse_key full_key
+    arr = full_key.split('.')
+    locale = arr.shift
+    key = arr.join('.')
+    value = Interpreter.backend.get(full_key)
+    value = ActiveSupport::JSON.decode(value) unless value.nil?
+    return [key, locale, value]
   end
 end

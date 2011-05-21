@@ -9,20 +9,18 @@
     .actions
       = submit_tag "Search"
 
-%h3 Categories
-#categories
-  - @categories.each do |c|
-    = link_to c.capitalize, category_interpreter_translations_path(c)
-
 %p= link_to "New Translation", new_interpreter_translation_path
 
-#translations
-  - @translations.each do |t|
-    .translation{:id => t.id}
-      .key= t.id
-      .value= t.value
-      .links
-        = link_to 'Show', interpreter_translation_path(t.key.gsub('.','-'))
-        = link_to 'Remove', interpreter_translation_path(t.key.gsub('.','-')), :method => :delete
-
-%p= link_to "New Translation", new_interpreter_translation_path
+%table#translations{:cellpadding => 0, :cellspacing => 0}
+  %thead
+    %tr
+      - InterpreterTranslation.available_locales.each do |locale|
+        %td= locale
+  %tbody
+    - @translations.each do |t|
+      %tr.translation{:id => t.key}
+        - InterpreterTranslation.available_locales.each do |locale|
+          %td.locale= t.send(locale)
+        %td.links
+          = link_to 'Edit', edit_interpreter_translation_path(t)
+          = link_to 'Remove', interpreter_translation_path(t), :method => :delete

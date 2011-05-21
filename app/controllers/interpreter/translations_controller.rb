@@ -2,17 +2,11 @@ class Interpreter::TranslationsController < ApplicationController
   layout "translations"
 
   def index
-    @categories = InterpreterTranslation.categories
-    if params[:category]
-      @translations = InterpreterTranslation.find_like_key("en.#{params[:category]}.*")
-    else
-      @translations = InterpreterTranslation.all
-    end
+    @translations = InterpreterTranslation.all
   end
 
   def search
-    @categories = InterpreterTranslation.categories
-    @translations = InterpreterTranslation.find_like_key params[:query]
+    @translations = InterpreterTranslation.find_all_by_value_like params[:query]
     @search_notice = "#{@translations.length} translation#{'s' if @translations.length > 1} found."
     render :action => :index
   end
@@ -21,16 +15,8 @@ class Interpreter::TranslationsController < ApplicationController
     @translation = InterpreterTranslation.new
   end
 
-  def show
-    @key = params[:id].gsub('-','.')
-    @translations = InterpreterTranslation.find_all_by_key(@key)
-  end
-
   def create
-    @translation = InterpreterTranslation.new
-    @translation.locale = params[:interpreter_translation][:locale]
-    @translation.key = params[:interpreter_translation][:key]
-    @translation.value = params[:interpreter_translation][:value]
+    @translation = InterpreterTranslation.new params[:interpreter_translation]
     if @translation.save
       redirect_to interpreter_translations_url, :notice => "Translation added."
     else
@@ -38,9 +24,28 @@ class Interpreter::TranslationsController < ApplicationController
     end
   end
 
-  def destroy
-    count = InterpreterTranslation.destroy(params[:id].gsub('-','.'))
-    redirect_to :back, :notice => "#{count} translation#{'s' if count > 1} destroyed."
+  def edit
+    @translation = InterpreterTranslation.find_by_key(params[:id].gsub('-','.'))
   end
 
+  def update
+    @translation = InterpreterTranslation.find_by_key(parse_id(params[:id]))
+    @translation.update_attributes(params[:interpreter_translation])
+    if @translation.save
+      redirect_to interpreter_translations_url, :notice => "Translation updated."
+    else
+      render :action => :edit
+    end
+  end
+
+  def destroy
+    count = InterpreterTranslation.destroy(params[:id].gsub('-','.'))
+    redirect_to :back, :notice => "Translation destroyed."
+  end
+
+  protected
+
+  def parse_id id
+    id.gsub('-','.')
+  end
 end

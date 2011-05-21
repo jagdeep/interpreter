@@ -13,10 +13,8 @@ Then /^I should see the following translations:$/ do |expected_translations_tabl
   expected_translations_table.diff!(tableish('table tr', 'td,th'))
 end
 
-Given /^a translation is present with key: (.+), value: (.+) and locale: (.+)$/ do |key, value, locale|
-  i = InterpreterTranslation.new
-  i.locale = locale
-  i.key = key
-  i.value = value
+Given /^a translation is present with key: "([^"]*)", en: "([^"]*)", pt: "([^"]*)" and es: "([^"]*)"$/ do |key, en, pt, es|
+  i = InterpreterTranslation.new(:key => key, :en => en, :pt => pt, :es => es)
   i.save
 end
+
