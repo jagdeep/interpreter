@@ -1,9 +1,0 @@
-%h1= link_to 'Translations', interpreter_translations_url
-
-%h2= @key
-
-#translations
-  - InterpreterTranslation.available_locales.each do |locale|
-    .translation
-      .locale= locale
-      .value= @translations[locale.to_s]

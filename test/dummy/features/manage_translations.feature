@@ -41,3 +41,12 @@ Feature: Manage translations
       And I press "Search"
     Then I should see "hello" within "#translations"
       And I should see "1 translation found."
+
+  Scenario: View all translations for each key on home page
+    Given a translation is present with key: hello, value: hey and locale: en
+      And a translation is present with key: hello, value: hoohoo and locale: pt
+      And a translation is present with key: hello, value: heehee and locale: es
+    When I go to the interpreter translations page
+    Then I should see "hey" within "#translations"
+      And I should see "hoohoo" within "#translations"
+      And I should see "heehee" within "#translations"
